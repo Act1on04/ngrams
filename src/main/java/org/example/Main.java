@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Main {
@@ -33,5 +34,27 @@ public class Main {
                 .entrySet().stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .forEach( entry -> System.out.println(entry.getKey() + " - " + entry.getValue()));
+
+
+        System.out.println("\n-= Сложное задание =-");
+        for (int i=1; i <= 5; i++) {
+            System.out.println("\n" + i + "-Grams:");
+            nGrams(lines, i);
+        }
+
+
     }
+
+    public static void nGrams(Set<String> lines, int n) {
+        lines.stream()
+                .map(word -> word.replaceAll("[^A-Za-z ]+", "").toLowerCase())
+                .flatMap(line -> IntStream.range(0, line.length() - n + 1).mapToObj(i -> line.substring(i, i + n)))
+                .filter(line -> !line.contains(" "))
+                .collect(Collectors.toMap(key -> key, val -> 1, Integer::sum))
+                .entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .limit(30)
+                .forEach( entry -> System.out.println(entry.getKey() + " - " + entry.getValue()));
+    }
+
 }
